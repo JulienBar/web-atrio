@@ -1,0 +1,58 @@
+Bonjour au relecteur,
+
+Concernant cet exercice, déjà, plusieurs choses n'ont pas été faites : 
+    - La question "Renvoient toutes les personnes enregistrées par ordre alphabétique, et indiquent également leur âge et leur(s) emploi(s) actuel(s)."
+    - La question "Renvoient toutes les personnes ayant travaillé pour une entreprise donnée." : le code est commenté et non fonctionnel
+    - La génération de la documentation API
+
+Au départ, je suis parti du principe qu'un emploi n'était pas forcément occupé, et donc qu'un emploi ne devait pas être lié à une personne. 
+Je n'ai absolument pas réussi à implémenter la relation ManyToMany, et j'y ai perdu beaucoup beaucoup de temps. 
+
+Je suis donc reparti, bien plus tard, sur une OneToMany en me rendant compte que rien dans le sujet ne laissait entendre qu'un emploi pouvait être inoccupé.
+
+En plus de ce qui n'a pas été fait, plusieurs choses ne vont pas : 
+    - il y a un problème dans la configuration docker
+    - je n'ai pas eu le temps de faire de tests unitaires ou d'intégration
+    - dans la méthode PersonneService#getAllEmploisParDates, les deux cas peuvent être gérés via une seule requête
+    - dans cette même méthode, ne pas instancier la personne et envoyer l'id à la requête (c'est ce qui ne marche pas dans la question "Renvoient toutes les personnes ayant travaillé pour une entreprise donnée.")
+    - gérer les dates correctement avec une timezone
+    - les messages d'erreur ne sont pas correctement retournés
+    - plusieurs cas d'erreurs ne sont tout simplement pas gérées
+    - la méthode checkAge de PersonneService pourrait être sortie dans un utilitaire pour réutilisation et tests
+    - la méthode PersonneService#getAllEmploisParDates ne fonctionne pas correctement, soit à cause de la requête qui a un problème de syntaxe, soit à cause de l'instanciation de la personne évoquée plus haut. Dans tous les cas, ligne 62, il faut 
+    Long id = Long.parseLong(idPersonne);
+    
+    au lieu de
+
+    Long id = Long.valueOf(idPersonne);
+
+
+Si vous avez malgré tout le courage de tester l'application, voici une doc maison avec des exemples : 
+
+1) Pour créer une personne : 
+
+POST /personne avec un body tel que celui ci : 
+{
+    "nom": "lenom",
+    "prenom": "leprenom",
+    "dateNaissance": "1923-01-12"
+}
+
+La personne (et son id) est retournée si la requête est correcte.
+
+2) Pour ajouter un emploi à une personne :
+
+POST /personne/{idPersonne}/emploi où {idPersonne} est l'id d'une personne existante, et avec un body tel que celui ci :
+
+{
+        "nomEntreprise": "nomEntreprise",
+        "poste": "poste",
+        "dateDebut": "1923-01-12"
+}
+
+La personne et tous ses emplois sont retournés.
+
+Les autres questions ne fonctionnent pas ou n'ont pas été traitées.
+
+Bonne journée,
+Julien
